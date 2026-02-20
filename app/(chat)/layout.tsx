@@ -1,7 +1,5 @@
-"use client";
-
 import { ReactNode } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "@/app/components/chat/Sidebar";
 import { ChatProvider } from "@/app/context/ChatContext";
 
 export default function ChatLayout({ children }: { children: ReactNode }) {
@@ -20,8 +18,3 @@ export default function ChatLayout({ children }: { children: ReactNode }) {
         </ChatProvider>
     );
 }
-
-// Minimal context or just empty hook if components still consume it
-// For now, we can remove the context if no longer needed,
-// OR keep a dummy one to avoid breaking `ChatHeader` before we fix it.
-// Let's remove it and fix ChatHeader immediately after.

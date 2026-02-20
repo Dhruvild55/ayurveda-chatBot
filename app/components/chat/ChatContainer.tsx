@@ -2,16 +2,17 @@
 
 import { useEffect, useState, useRef } from "react";
 import ChatHeader from "./ChatHeader";
-import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import TypingIndicator from "./TypingIndicator";
 import { useChat } from "@/app/context/ChatContext";
 import { chat } from "@/lib/api";
+import ChatMessage from "./ChatMessage";
 
 interface Message {
     id?: string;
     message: string;
     isUser: boolean;
+    isStreaming?: boolean;
 }
 
 interface ChatContainerProps {
@@ -32,30 +33,25 @@ export default function ChatContainer({ sessionId }: ChatContainerProps) {
 
     useEffect(() => {
         fetchMessages();
-    }, [sessionId]); // Re-fetch when sessionId changes
+    }, [sessionId]);
 
     useEffect(() => {
         scrollToBottom();
     }, [messages, isTyping]);
 
     const fetchMessages = async () => {
-        setLoading(true); // Reset loading state on fetch
+        setLoading(true);
         try {
-            let data: { question: string, answer: string, createdAt: string }[] = [];
+            let data: { question: string; answer: string; createdAt: string }[] = [];
 
             if (sessionId) {
-                // Fetch specific session history
                 data = await chat.getMessages(sessionId);
             } else {
-                // New chat, maybe clear messages or fetch default empty state
-                // For now, let's assume new chat starts empty unless we have a "default" history endpoint
-                // data = await chat.getMessages(); // converting this to specific ID based fetch
                 setMessages([]);
                 setLoading(false);
                 return;
             }
 
-            // API returns array of conversation pairs
             const formattedMessages: Message[] = [];
 
             if (Array.isArray(data)) {
@@ -72,7 +68,6 @@ export default function ChatContainer({ sessionId }: ChatContainerProps) {
             setMessages(formattedMessages);
         } catch (err) {
             console.error("Failed to fetch messages", err);
-            // setError("Failed to load history");
         } finally {
             setLoading(false);
         }
@@ -81,64 +76,139 @@ export default function ChatContainer({ sessionId }: ChatContainerProps) {
     const handleSendMessage = async (text: string) => {
         if (!text.trim()) return;
 
-        // Optimistic update
+        // Add user message
         const newMessage: Message = { message: text, isUser: true };
         setMessages((prev) => [...prev, newMessage]);
         setIsTyping(true);
 
+        // Add empty bot message placeholder with streaming flag
+        setMessages((prev) => [
+            ...prev,
+            { message: "", isUser: false, isStreaming: true },
+        ]);
+
         try {
-            console.log(text)
-            const response = await chat.sendMessage(text, sessionId);
+            const response = await chat.streamChat(text, sessionId);
 
-            // Refresh sessions list in sidebar
-            console.log("ChatContainer: refreshing sessions...");
-            await refreshSessions();
+            // Refresh sidebar sessions
+            refreshSessions();
 
-            // Assuming API returns the bot response or the full message object
-            // If response is just the bot's reply text:
-            if (response && response.answer) {
-                let botMessage = response.answer;
-                if (response.disclaimer) {
-                    botMessage += `\n\n_${response.disclaimer}_`;
-                }
-                setMessages((prev) => [...prev, { message: botMessage, isUser: false }]);
-            } else if (response && response.message) {
-                setMessages((prev) => [...prev, { message: response.message, isUser: false }]);
-            } else if (typeof response === 'string') {
-                setMessages((prev) => [...prev, { message: response, isUser: false }]);
+            if (!response.body) {
+                throw new Error("ReadableStream not supported in this browser.");
             }
 
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let botMessage = "";
+            let buffer = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                buffer += decoder.decode(value, { stream: true });
+
+                // Split buffer into lines
+                const lines = buffer.split("\n");
+
+                // Keep last incomplete line in buffer
+                buffer = lines.pop() ?? "";
+
+                for (const line of lines) {
+                    const trimmed = line.trim();
+
+                    // Skip empty SSE separator lines
+                    if (!trimmed) continue;
+
+                    // Parse SSE "data: <content>" format
+                    if (trimmed.startsWith("data:")) {
+                        const chunk = trimmed.slice(5); // Remove "data:" prefix
+
+                        // Handle end of stream signal
+                        if (chunk.trim() === "[DONE]") break;
+
+                        botMessage += chunk;
+
+                        // Update the last bot message in real time
+                        setMessages((prev) => {
+                            const newMessages = [...prev];
+                            const lastMsg = newMessages[newMessages.length - 1];
+                            if (lastMsg && !lastMsg.isUser) {
+                                lastMsg.message = botMessage;
+                            }
+                            return newMessages;
+                        });
+                    }
+                }
+            }
         } catch (err) {
             console.error("Failed to send message", err);
-            setError("Failed to send message");
-            // Optionally rollback optimistic update
+            setError("Failed to send message. Please try again.");
+            // Remove empty failed bot message
+            setMessages((prev) =>
+                prev.filter((msg) => msg.message !== "" || msg.isUser)
+            );
         } finally {
             setIsTyping(false);
+
+            // Turn off streaming flag on last bot message
+            setMessages((prev) => {
+                const newMessages = [...prev];
+                const lastMsg = newMessages[newMessages.length - 1];
+                if (lastMsg && !lastMsg.isUser) {
+                    lastMsg.isStreaming = false;
+                }
+                return newMessages;
+            });
         }
     };
 
     return (
-        <div className="flex flex-col h-full bg-stone-50/10">
+        <div className="flex flex-col h-full w-full bg-stone-50/20">
             <ChatHeader />
 
-            <div className="flex-1 w-full max-w-3xl mx-auto flex flex-col bg-white shadow-sm border-x border-stone-100 overflow-hidden">
-                <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-4 bg-stone-50/30">
-                    {loading && <p className="text-center text-stone-500">Loading chat history...</p>}
-                    {error && <p className="text-center text-red-500">{error}</p>}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
+                <div className="max-w-3xl mx-auto w-full space-y-4">
+                    {loading && (
+                        <p className="text-center text-stone-500">
+                            Loading chat history...
+                        </p>
+                    )}
+                    {error && (
+                        <p className="text-center text-red-500">{error}</p>
+                    )}
+
+                    {!loading && messages.length === 0 && (
+                        <div className="flex flex-col items-center justify-center h-64 text-center text-stone-400">
+                            <p className="text-4xl mb-3">🌿</p>
+                            <p className="text-lg font-medium text-stone-600">
+                                Namaste! I&apos;m Veda
+                            </p>
+                            <p className="text-sm mt-1">
+                                Ask me anything about your Ayurvedic wellness journey.
+                            </p>
+                        </div>
+                    )}
 
                     {messages.map((msg, index) => (
                         <ChatMessage
                             key={index}
                             message={msg.message}
                             isUser={msg.isUser}
+                            isStreaming={msg.isStreaming}
                         />
                     ))}
+
                     {isTyping && <TypingIndicator />}
                     <div ref={messagesEndRef} />
                 </div>
+            </div>
 
-                <ChatInput onSend={handleSendMessage} disabled={false} />
+            <div className="border-t bg-white p-4">
+                <div className="max-w-3xl mx-auto w-full">
+                    <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+                </div>
             </div>
         </div>
-    )
+    );
 }

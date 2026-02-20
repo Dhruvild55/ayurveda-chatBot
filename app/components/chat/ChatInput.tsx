@@ -24,10 +24,10 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
     };
 
     return (
-        <div className="sticky bottom-0 bg-cream p-2 border-t">
-            <div className="flex gap-2">
+        <div className="w-full">
+            <div className="flex gap-2 relative bg-stone-50 rounded-xl border border-stone-200 focus-within:ring-1 focus-within:ring-sage shadow-sm p-1">
                 <input
-                    className="flex-1 p-2 rounded-lg border focus:outline-none focus:ring-1 focus:ring-sage"
+                    className="flex-1 p-3 bg-transparent border-none focus:outline-none text-sm text-stone-700"
                     placeholder="Type a message..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -37,13 +37,13 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
                 <button
                     onClick={handleSend}
                     disabled={disabled || !input.trim()}
-                    className="p-2 bg-sage text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition"
+                    className="p-2 bg-sage text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition self-end"
                 >
-                    <Send size={20} />
+                    <Send size={18} />
                 </button>
             </div>
-            <p className="text-[10px] text-center mt-1 text-stone-400">
-                Ayurveda AI is not medical advice
+            <p className="text-[10px] text-center mt-2 text-stone-400">
+                Ayurveda AI can make mistakes. Consider checking important information.
             </p>
         </div>
     )

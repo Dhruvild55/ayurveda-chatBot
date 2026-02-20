@@ -1,7 +1,6 @@
 "use client";
 
 import ChatContainer from "@/app/components/chat/ChatContainer";
-import ChatLayout from "@/app/components/chat/ChatLayout";
 import { use } from "react";
 
 export default function ChatPage({ params }: { params: Promise<{ id: string }> }) {
@@ -10,8 +9,6 @@ export default function ChatPage({ params }: { params: Promise<{ id: string }> }
     const { id } = use(params);
 
     return (
-        <ChatLayout>
-            <ChatContainer sessionId={id} />
-        </ChatLayout>
+        <ChatContainer sessionId={id} />
     );
 }
