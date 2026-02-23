@@ -1,8 +1,9 @@
 "use client";
 
-import { MessageSquarePlus, MessageCircle, MoreVertical } from "lucide-react";
+import { MessageSquarePlus, MessageCircle, MoreVertical, Trash2, LayoutDashboard } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 
 import { useChat } from "@/app/context/ChatContext";
 
@@ -13,58 +14,105 @@ interface ChatSession {
 }
 
 export default function Sidebar() {
+    const router = useRouter();
+    const pathname = usePathname();
     const { data: session } = useSession();
-    const { sessions: recentChats, loading } = useChat();
+    const { sessions: recentChats, loading, user, deleteSession } = useChat();
+
+    const handleDelete = async (e: React.MouseEvent, id: string) => {
+        e.stopPropagation();
+        if (window.confirm("Are you sure you want to delete this chat?")) {
+            try {
+                await deleteSession(id);
+                // If we are currently on the deleted chat page, redirect to /chat
+                if (pathname === `/chat/${id}`) {
+                    router.push("/chat");
+                }
+            } catch (error) {
+                alert("Failed to delete chat session");
+            }
+        }
+    };
 
     // No local fetch effect needed anymore
 
     return (
-        <div className="w-64 bg-stone-50 border-r border-stone-200 h-full flex flex-col hidden md:flex">
-            <div className="p-4 border-b border-stone-200">
-                <Link href="/chat" className="w-full flex items-center justify-center gap-2 bg-sage hover:bg-sage/90 text-white px-4 py-2 rounded-lg transition-colors font-medium">
-                    <MessageSquarePlus className="w-5 h-5" />
-                    New Chat
+        <div className="w-72 bg-white/40 backdrop-blur-xl border-r border-white/20 h-full flex flex-col hidden md:flex relative z-10">
+            <div className="p-6 space-y-4">
+                <Link
+                    href="/dashboard"
+                    className="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 font-bold text-xs border border-stone-200 bg-white/50 hover:bg-white hover:border-forest/30 hover:shadow-lg hover:shadow-forest/5 text-stone-600 hover:text-forest"
+                >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                </Link>
+                <Link
+                    href="/chat"
+                    className="w-full flex items-center justify-center gap-2 bg-forest hover:bg-forest/90 text-white px-4 py-4 rounded-2xl transition-all duration-300 font-bold text-xs shadow-xl shadow-forest/20 hover:shadow-forest/30"
+                >
+                    <MessageSquarePlus className="w-4 h-4" />
+                    New Revelation
                 </Link>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-2 space-y-1">
-                <div className="px-3 py-2 text-xs font-semibold text-stone-500 uppercase tracking-wider">
-                    Recent
+            <div className="flex-1 overflow-y-auto px-4 py-2 space-y-4 custom-scrollbar">
+                <div className="px-4 py-2 text-[10px] font-black text-stone-400 tracking-wider flex items-center gap-2">
+                    <span className="w-1 h-3 bg-forest/30 rounded-full" />
+                    Recent Journeys
                 </div>
                 {loading ? (
-                    <div className="px-3 py-2 text-sm text-stone-400">Loading...</div>
+                    <div className="px-4 py-2 text-sm text-stone-400 animate-pulse">Scanning archives...</div>
                 ) : recentChats.length === 0 ? (
-                    <div className="px-3 py-2 text-sm text-stone-400 italic">No recent chats</div>
+                    <div className="px-4 py-8 text-center">
+                        <p className="text-xs text-stone-400 italic">No previous whispers</p>
+                    </div>
                 ) : (
-                    recentChats.map((chat) => (
-                        <button
-                            key={chat.id}
-                            className="w-full text-left flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-stone-200/50 text-stone-700 transition-colors group"
-                            onClick={() => window.location.href = `/chat/${chat.id}`} // Using window.location to force reload/navigation for now, or use Link/router
-                        // keeping it simple with Link wrapper would be better, but button onClick:
-                        >
-                            <MessageCircle className="w-5 h-5 text-stone-400 group-hover:text-sage" />
-                            <div className="flex-1 overflow-hidden">
-                                <p className="truncate text-sm font-medium">{chat.sessionName || "New Conversation"}</p>
-                                <p className="text-xs text-stone-500">
-                                    {chat.createdAt ? new Date(chat.createdAt).toLocaleDateString() : ""}
-                                </p>
+                    <div className="space-y-2">
+                        {recentChats.map((chat) => (
+                            <div
+                                key={chat.id}
+                                className="relative group"
+                            >
+                                <button
+                                    className={`w-full text-left flex items-center gap-3 px-4 py-4 rounded-2xl transition-all duration-300 border ${pathname === `/chat/${chat.id}`
+                                        ? "bg-white border-forest/20 shadow-lg shadow-forest/5 text-forest"
+                                        : "bg-transparent border-transparent text-stone-600 hover:bg-white/50 hover:border-stone-100"
+                                        }`}
+                                    onClick={() => router.push(`/chat/${chat.id}`)}
+                                >
+                                    <MessageCircle className={`w-4 h-4 transition-colors ${pathname === `/chat/${chat.id}` ? "text-forest" : "text-stone-400 group-hover:text-forest"}`} />
+                                    <div className="flex-1 overflow-hidden pr-6">
+                                        <p className="truncate text-sm font-bold tracking-tight">{chat.sessionName || "New Conversation"}</p>
+                                        <p className="text-[10px] text-stone-400 mt-0.5 font-medium tracking-wider">
+                                            {chat.createdAt ? new Date(chat.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ""}
+                                        </p>
+                                    </div>
+                                </button>
+                                <button
+                                    onClick={(e) => handleDelete(e, chat.id)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-stone-300 hover:text-red-500 hover:bg-red-50 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300"
+                                    title="Exile memory"
+                                >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                </button>
                             </div>
-                        </button>
-                    ))
+                        ))}
+                    </div>
                 )}
             </div>
 
-            <div className="p-4 border-t border-stone-200">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-sage/20 flex items-center justify-center text-sage font-bold text-xs uppercase">
-                        {session?.user?.name?.[0] || "U"}
+            <div className="p-6 border-t border-white/20 bg-white/30 backdrop-blur-md">
+                <div className="flex items-center gap-4">
+                    <div className="relative">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-forest to-moss flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-forest/20">
+                            {user?.name?.[0] || "U"}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" />
                     </div>
                     <div className="flex-1 overflow-hidden">
-                        <p className="truncate text-sm font-medium text-stone-700">{session?.user?.name || "User"}</p>
-                        <p className="text-xs text-stone-500 truncate">{session?.user?.email || "user@example.com"}</p>
+                        <p className="truncate text-sm font-bold text-stone-800 tracking-tight">{user?.name || "Seeker"}</p>
+                        <p className="text-[11px] text-stone-500 truncate font-medium">{user?.email || "seeker@veda.io"}</p>
                     </div>
-                    {/* Settings or profile menu trigger could go here */}
                 </div>
             </div>
         </div>

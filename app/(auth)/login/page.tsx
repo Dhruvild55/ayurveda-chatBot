@@ -35,6 +35,8 @@ export default function LoginPage() {
                     });
 
                     localStorage.setItem("token", data.token);
+                    localStorage.setItem("userName", data.name || "");
+                    localStorage.setItem("userEmail", data.email || "");
                     if (data.isOnboardingCompleted) {
                         router.push("/chat");
                     } else {
@@ -61,6 +63,8 @@ export default function LoginPage() {
             const data = await auth.login(email, password);
 
             localStorage.setItem("token", data.token);
+            localStorage.setItem("userName", data.name || "");
+            localStorage.setItem("userEmail", data.email || "");
             if (data.isOnboardingCompleted) {
                 router.push("/chat");
             } else {
@@ -101,22 +105,22 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
             />
             <div className="h-4" />
-            <Button onClick={handleLogin} disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
+            <Button onClick={handleLogin} disabled={loading} variant="forest" className="h-14 rounded-2xl font-bold text-xs">
+                {loading ? "Initializing..." : "Login to Sanctum"}
             </Button>
 
-            <div className="relative my-6">
+            <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-stone-200"></div>
+                    <div className="w-full border-t border-stone-100"></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-stone-500">Or continue with</span>
+                <div className="relative flex justify-center text-[10px] font-black tracking-wider">
+                    <span className="px-4 bg-transparent text-stone-400">Gateway Protocols</span>
                 </div>
             </div>
 
-            <div className="space-y-3">
-                <Button variant="outline" onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <div className="space-y-4">
+                <Button variant="outline" onClick={handleGoogleLogin} className="w-full h-14 rounded-2xl flex items-center justify-center gap-3 font-bold text-sm border-stone-200 hover:bg-white transition-all">
+                    <svg className="w-5 h-5 shadow-sm" viewBox="0 0 24 24">
                         <path
                             fill="currentColor"
                             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -138,23 +142,26 @@ export default function LoginPage() {
                             className="text-[#EA4335]"
                         />
                     </svg>
-                    Google
+                    Continue with Google
                 </Button>
-                <Button variant="outline" onClick={handleMicrosoftLogin} className="w-full flex items-center justify-center gap-2">
-                    <svg className="w-5 h-5" viewBox="0 0 23 23">
+                <Button variant="outline" onClick={handleMicrosoftLogin} className="w-full h-14 rounded-2xl flex items-center justify-center gap-3 font-bold text-sm border-stone-200 hover:bg-white transition-all">
+                    <svg className="w-5 h-5 shadow-sm" viewBox="0 0 23 23">
                         <path fill="#f35325" d="M1 1h10v10H1z" />
                         <path fill="#81bc06" d="M12 1h10v10H12z" />
                         <path fill="#05a6f0" d="M1 12h10v10H1z" />
                         <path fill="#ffba08" d="M12 12h10v10H12z" />
                     </svg>
-                    Microsoft
+                    Continue with Microsoft
                 </Button>
             </div>
-            <p className="text-center mt-4">
-                <Link href="/register">
-                    Register
+
+            <p className="text-center mt-10 text-stone-500 text-sm font-medium">
+                New to the path?{" "}
+                <Link href="/register" className="text-forest font-bold hover:underline transition-all underline-offset-4">
+                    Register Now
                 </Link>
             </p>
         </AuthCard>
     );
 }
+

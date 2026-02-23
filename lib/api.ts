@@ -46,6 +46,10 @@ export const auth = {
         const response = await api.post("/auth/onboarding", data);
         return response.data;
     },
+    getProfile: async () => {
+        const response = await api.get("/auth/profile");
+        return response.data;
+    },
     socialLogin: async (data: { name?: string | null, email?: string | null, provider: string, idToken?: string, providerUserId?: string }) => {
         const response = await api.post("/auth/social-login", data);
         return response.data;
@@ -57,52 +61,22 @@ export const chat = {
         const response = await api.get(`/chat/history/${id}`);
         return response.data;
     },
-    sendMessage: async (message: string, sessionId?: string | null) => {
-        const token = localStorage.getItem("token");
+    sendMessage: async (message: string, chatSessionId?: string | null) => {
         const payload: any = { message };
-        if (sessionId) {
-            payload.sessionId = sessionId;
+        if (chatSessionId) {
+            payload.chatSessionId = chatSessionId;
         }
 
-        const response = await fetch(`${API_URL}chat/send-stream`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token ? `Bearer ${token}` : "",
-            },
-            body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to send message: ${response.statusText}`);
-        }
-
-        return response;
-    },
-    streamChat: async (message: string, sessionId?: string | null) => {
-        const token = localStorage.getItem("token");
-        const payload: any = { message };
-        if (sessionId) {
-            payload.sessionId = sessionId;
-        }
-
-        const response = await fetch(`${API_URL}chat/send-stream`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token ? `Bearer ${token}` : "",
-            },
-            body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to send message: ${response.statusText}`);
-        }
-
-        return response;
+        const response = await api.post("/chat/send", payload);
+        return response.data;
     },
     getChatSessions: async () => {
         const response = await api.get("/chat/sessions");
+        return response.data;
+    },
+
+    deleteChatSession: async (id: string) => {
+        const response = await api.delete(`/chat/delete-session/${id}`);
         return response.data;
     },
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
@@ -8,32 +9,44 @@ import { useChat } from "@/app/context/ChatContext";
 import { chat } from "@/lib/api";
 import ChatMessage from "./ChatMessage";
 
+
 interface Message {
     id?: string;
     message: string;
     isUser: boolean;
-    isStreaming?: boolean;
 }
 
 interface ChatContainerProps {
-    sessionId?: string;
+    chatSessionId?: string;
 }
 
-export default function ChatContainer({ sessionId }: ChatContainerProps) {
+export default function ChatContainer({ chatSessionId }: ChatContainerProps) {
+    const router = useRouter();
     const { refreshSessions } = useChat();
     const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(true);
     const [isTyping, setIsTyping] = useState(false);
     const [error, setError] = useState("");
+    const [activeSessionId, setActiveSessionId] = useState<string | undefined>(chatSessionId);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const skipNextFetch = useRef(false);
+
+    // Update activeSessionId when prop changes
+    useEffect(() => {
+        setActiveSessionId(chatSessionId);
+    }, [chatSessionId]);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
     };
 
     useEffect(() => {
+        if (skipNextFetch.current) {
+            skipNextFetch.current = false;
+            return;
+        }
         fetchMessages();
-    }, [sessionId]);
+    }, [chatSessionId]);
 
     useEffect(() => {
         scrollToBottom();
@@ -44,8 +57,8 @@ export default function ChatContainer({ sessionId }: ChatContainerProps) {
         try {
             let data: { question: string; answer: string; createdAt: string }[] = [];
 
-            if (sessionId) {
-                data = await chat.getMessages(sessionId);
+            if (chatSessionId) {
+                data = await chat.getMessages(chatSessionId);
             } else {
                 setMessages([]);
                 setLoading(false);
@@ -73,120 +86,95 @@ export default function ChatContainer({ sessionId }: ChatContainerProps) {
         }
     };
 
+    // Helper — avoids repeating setMessages logic everywhere
+    const updateLastBotMessage = (text: string) => {
+        setMessages((prev) => {
+            const newMessages = [...prev];
+            const lastMsg = newMessages[newMessages.length - 1];
+            if (lastMsg && !lastMsg.isUser) {
+                lastMsg.message = text;
+            }
+            return newMessages;
+        });
+    };
+
     const handleSendMessage = async (text: string) => {
         if (!text.trim()) return;
 
         // Add user message
-        const newMessage: Message = { message: text, isUser: true };
-        setMessages((prev) => [...prev, newMessage]);
+        setMessages((prev) => [...prev, { message: text, isUser: true }]);
         setIsTyping(true);
 
-        // Add empty bot message placeholder with streaming flag
-        setMessages((prev) => [
-            ...prev,
-            { message: "", isUser: false, isStreaming: true },
-        ]);
-
         try {
-            const response = await chat.streamChat(text, sessionId);
+            const currentSessionId = activeSessionId;
+            const data = await chat.sendMessage(text, currentSessionId);
 
-            // Refresh sidebar sessions
-            refreshSessions();
+            const botMessage = data.message || data.answer || data.content || "";
+            const newId = data.sessionId || data.chatSessionId || data.id;
 
-            if (!response.body) {
-                throw new Error("ReadableStream not supported in this browser.");
+            if (newId && !currentSessionId) {
+                skipNextFetch.current = true;
+                setActiveSessionId(newId);
+                window.history.replaceState(null, "", `/chat/${newId}`);
             }
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let botMessage = "";
-            let buffer = "";
+            // Add bot message
+            setMessages((prev) => [...prev, { message: botMessage, isUser: false }]);
 
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                buffer += decoder.decode(value, { stream: true });
-
-                // Split buffer into lines
-                const lines = buffer.split("\n");
-
-                // Keep last incomplete line in buffer
-                buffer = lines.pop() ?? "";
-
-                for (const line of lines) {
-                    const trimmed = line.trim();
-
-                    // Skip empty SSE separator lines
-                    if (!trimmed) continue;
-
-                    // Parse SSE "data: <content>" format
-                    if (trimmed.startsWith("data:")) {
-                        const chunk = trimmed.slice(5); // Remove "data:" prefix
-
-                        // Handle end of stream signal
-                        if (chunk.trim() === "[DONE]") break;
-
-                        botMessage += chunk;
-
-                        // Update the last bot message in real time
-                        setMessages((prev) => {
-                            const newMessages = [...prev];
-                            const lastMsg = newMessages[newMessages.length - 1];
-                            if (lastMsg && !lastMsg.isUser) {
-                                lastMsg.message = botMessage;
-                            }
-                            return newMessages;
-                        });
-                    }
-                }
-            }
         } catch (err) {
             console.error("Failed to send message", err);
             setError("Failed to send message. Please try again.");
-            // Remove empty failed bot message
-            setMessages((prev) =>
-                prev.filter((msg) => msg.message !== "" || msg.isUser)
-            );
         } finally {
             setIsTyping(false);
-
-            // Turn off streaming flag on last bot message
-            setMessages((prev) => {
-                const newMessages = [...prev];
-                const lastMsg = newMessages[newMessages.length - 1];
-                if (lastMsg && !lastMsg.isUser) {
-                    lastMsg.isStreaming = false;
-                }
-                return newMessages;
-            });
+            refreshSessions();
         }
     };
 
     return (
-        <div className="flex flex-col h-full w-full bg-stone-50/20">
+        <div className="flex flex-col h-full w-full bg-transparent relative overflow-hidden">
             <ChatHeader />
 
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
-                <div className="max-w-3xl mx-auto w-full space-y-4">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 relative z-10 custom-scrollbar flex flex-col">
+                <div className="max-w-4xl mx-auto w-full space-y-6 flex-1 flex flex-col">
                     {loading && (
-                        <p className="text-center text-stone-500">
-                            Loading chat history...
-                        </p>
+                        <div className="flex-1 flex flex-col items-center justify-center space-y-4">
+                            <div className="w-12 h-12 border-4 border-forest/20 border-t-forest rounded-full animate-spin" />
+                            <p className="text-stone-400 text-xs font-black">
+                                Retrieving Sacred Knowledge...
+                            </p>
+                        </div>
                     )}
                     {error && (
-                        <p className="text-center text-red-500">{error}</p>
+                        <div className="glass-card p-4 rounded-2xl border-red-100 bg-red-50/30 text-center">
+                            <p className="text-red-600 text-sm font-bold">{error}</p>
+                        </div>
                     )}
 
                     {!loading && messages.length === 0 && (
-                        <div className="flex flex-col items-center justify-center h-64 text-center text-stone-400">
-                            <p className="text-4xl mb-3">🌿</p>
-                            <p className="text-lg font-medium text-stone-600">
-                                Namaste! I&apos;m Veda
-                            </p>
-                            <p className="text-sm mt-1">
-                                Ask me anything about your Ayurvedic wellness journey.
-                            </p>
+                        <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
+                            <div className="bg-white/60 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/40 shadow-2xl shadow-forest/5 max-w-lg">
+                                <div className="w-20 h-20 bg-forest rounded-3xl flex items-center justify-center text-3xl mb-8 mx-auto shadow-xl shadow-forest/20">
+                                    🌿
+                                </div>
+                                <h2 className="text-3xl font-bold text-stone-900 mb-4 tracking-tight">
+                                    Namaste, seeker.
+                                </h2>
+                                <p className="text-stone-600 text-lg leading-relaxed mb-8">
+                                    I am <span className="text-forest font-black">VEDA</span>, your guide through the ancient rivers of Ayurvedic wisdom.
+                                </p>
+                                <div className="grid grid-cols-1 gap-3">
+                                    {["Determine my Dosha", "Evening rejuvenation ritual", "Herbs for vitality"].map((suggestion) => (
+                                        <button
+                                            key={suggestion}
+                                            onClick={() => handleSendMessage(suggestion)}
+                                            className="px-6 py-4 rounded-2xl bg-white border border-stone-100 text-stone-600 font-bold text-sm hover:border-forest/30 hover:text-forest hover:shadow-lg transition-all duration-300 text-left flex items-center gap-3 group"
+                                        >
+                                            <span className="w-1.5 h-1.5 rounded-full bg-forest/20 group-hover:bg-forest transition-colors" />
+                                            {suggestion}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -195,20 +183,21 @@ export default function ChatContainer({ sessionId }: ChatContainerProps) {
                             key={index}
                             message={msg.message}
                             isUser={msg.isUser}
-                            isStreaming={msg.isStreaming}
                         />
                     ))}
 
                     {isTyping && <TypingIndicator />}
+                    <div className="h-20" /> {/* Extra spacing at bottom of list */}
                     <div ref={messagesEndRef} />
                 </div>
             </div>
 
-            <div className="border-t bg-white p-4">
-                <div className="max-w-3xl mx-auto w-full">
+            <div className="pb-10 pt-2 px-6 relative z-10">
+                <div className="max-w-4xl mx-auto w-full">
                     <ChatInput onSend={handleSendMessage} disabled={isTyping} />
                 </div>
             </div>
         </div>
+
     );
 }
