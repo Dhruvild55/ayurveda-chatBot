@@ -134,12 +134,12 @@ export default function ChatContainer({ chatSessionId }: ChatContainerProps) {
         <div className="flex flex-col h-full w-full bg-transparent relative overflow-hidden">
             <ChatHeader />
 
-            <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 relative z-10 custom-scrollbar flex flex-col">
-                <div className="max-w-4xl mx-auto w-full space-y-6 flex-1 flex flex-col">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 relative z-10 custom-scrollbar flex flex-col">
+                <div className="max-w-4xl mx-auto w-full space-y-4 md:space-y-6 flex-1 flex flex-col">
                     {loading && (
                         <div className="flex-1 flex flex-col items-center justify-center space-y-4">
                             <div className="w-12 h-12 border-4 border-forest/20 border-t-forest rounded-full animate-spin" />
-                            <p className="text-stone-400 text-xs font-black">
+                            <p className="text-stone-400 text-xs font-bold">
                                 Retrieving Sacred Knowledge...
                             </p>
                         </div>
@@ -160,14 +160,14 @@ export default function ChatContainer({ chatSessionId }: ChatContainerProps) {
                                     Namaste, seeker.
                                 </h2>
                                 <p className="text-stone-600 text-lg leading-relaxed mb-8">
-                                    I am <span className="text-forest font-black">VEDA</span>, your guide through the ancient rivers of Ayurvedic wisdom.
+                                    I am <span className="text-forest font-bold">VEDA</span>, your guide through the ancient rivers of Ayurvedic wisdom.
                                 </p>
-                                <div className="grid grid-cols-1 gap-3">
+                                <div className="grid grid-cols-1 gap-2 md:gap-3">
                                     {["Determine my Dosha", "Evening rejuvenation ritual", "Herbs for vitality"].map((suggestion) => (
                                         <button
                                             key={suggestion}
                                             onClick={() => handleSendMessage(suggestion)}
-                                            className="px-6 py-4 rounded-2xl bg-white border border-stone-100 text-stone-600 font-bold text-sm hover:border-forest/30 hover:text-forest hover:shadow-lg transition-all duration-300 text-left flex items-center gap-3 group"
+                                            className="px-5 md:px-6 py-3.5 md:py-4 rounded-xl md:rounded-2xl bg-white border border-stone-100 text-stone-600 font-bold text-xs md:text-sm hover:border-forest/30 hover:text-forest hover:shadow-lg transition-all duration-300 text-left flex items-center gap-3 group"
                                         >
                                             <span className="w-1.5 h-1.5 rounded-full bg-forest/20 group-hover:bg-forest transition-colors" />
                                             {suggestion}
@@ -192,7 +192,7 @@ export default function ChatContainer({ chatSessionId }: ChatContainerProps) {
                 </div>
             </div>
 
-            <div className="pb-10 pt-2 px-6 relative z-10">
+            <div className="pb-6 md:pb-10 pt-2 px-4 md:px-6 relative z-10">
                 <div className="max-w-4xl mx-auto w-full">
                     <ChatInput onSend={handleSendMessage} disabled={isTyping} />
                 </div>

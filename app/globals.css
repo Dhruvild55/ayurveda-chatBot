@@ -5,23 +5,10 @@
 @theme {
   --font-sans: "Inter", sans-serif;
   --font-serif: "Inter", sans-serif;
-
-  --color-cream: #FCFAF7;
-  --color-sage: #8DA399;
-  --color-forest: #2C4A3E;
-  --color-moss: #5B7B6D;
-  --color-celadon: #E8F0E9;
-  --color-stone-50: #fafaf9;
-  --color-stone-100: #f5f5f4;
-  --color-stone-200: #e7e5e4;
-  --color-stone-300: #d6d3d1;
-  --color-stone-400: #a8a29e;
-  --color-stone-500: #78716c;
-  --color-stone-600: #57534e;
-  --color-stone-700: #44403c;
-  --color-stone-800: #292524;
-  --color-stone-900: #1c1917;
-
+  --color-forest: #2d4a3e;
+  --color-sage: #8da693;
+  --color-moss: #4a5d4e;
+  --color-celadon: #b2d3c2;
 }
 
 @layer utilities {
@@ -54,7 +41,6 @@ body {
     radial-gradient(at 50% 0%, hsla(168, 14%, 90%, 1) 0, transparent 50%),
     radial-gradient(at 100% 0%, hsla(43, 23%, 95%, 1) 0, transparent 50%);
   @apply min-h-screen text-stone-800;
-  font-feature-settings: "ss01", "ss02", "cv01", "cv11";
 }
 
 /* Custom scrollbar for premium feel */
@@ -72,7 +58,7 @@ body {
 
 .markdown-body h1,
 .markdown-body h2 {
-  @apply font-serif font-bold text-stone-900 mt-6 mb-4 leading-tight;
+  @apply font-bold text-stone-900 mt-6 mb-4 leading-tight;
 }
 
 .markdown-body p {

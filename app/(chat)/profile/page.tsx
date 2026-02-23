@@ -108,7 +108,7 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start py-12 px-4 bg-transparent">
+        <div className="min-h-screen flex flex-col items-center justify-start py-8 md:py-12 px-4 bg-transparent">
             <div className="w-full max-w-xl">
                 {/* Header Navigation */}
                 <div className="flex items-center justify-between mb-8">
@@ -118,19 +118,19 @@ export default function ProfilePage() {
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
-                    <h1 className="text-3xl font-serif font-bold text-stone-900 tracking-tight">Your Essence</h1>
+                    <h1 className="text-3xl font-bold text-stone-900 tracking-tight">Your Essence</h1>
                     <div className="w-11" /> {/* Spacer for centering */}
                 </div>
 
-                <div className="glass-card w-full rounded-[2.5rem] shadow-2xl border-white overflow-hidden bg-white/70">
-                    <div className="p-8 md:p-12">
+                <div className="glass-card w-full rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border-white overflow-hidden bg-white/70">
+                    <div className="p-6 md:p-12">
                         {success ? (
                             <div className="flex flex-col items-center justify-center py-12 text-forest gap-6 text-center">
                                 <div className="w-24 h-24 bg-forest rounded-[2rem] flex items-center justify-center shadow-2xl shadow-forest/20">
                                     <Leaf className="w-12 h-12 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-3xl font-serif font-bold text-stone-900 leading-tight mb-2">Wisdom Integrated.</h3>
+                                    <h3 className="text-3xl font-bold text-stone-900 leading-tight mb-2">Wisdom Integrated.</h3>
                                     <p className="text-stone-500 font-medium max-w-xs mx-auto">Your profile has been aligned with your Ayurvedic essence. Returning to chat...</p>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@ export default function ProfilePage() {
                                     {step === 1 && (
                                         <div className="space-y-8">
                                             <div>
-                                                <h3 className="text-xl font-serif text-stone-900 font-bold mb-2">Elemental Stats</h3>
+                                                <h3 className="text-xl text-stone-900 font-bold mb-2">Elemental Stats</h3>
                                                 <p className="text-stone-500 text-sm mb-6">Your physical presence in this manifestation.</p>
                                             </div>
                                             <div className="space-y-6">
@@ -205,7 +205,7 @@ export default function ProfilePage() {
                                     {step === 2 && (
                                         <div className="space-y-8">
                                             <div>
-                                                <h3 className="text-xl font-serif text-stone-900 font-bold mb-2">Dietary Alignment</h3>
+                                                <h3 className="text-xl text-stone-900 font-bold mb-2">Dietary Alignment</h3>
                                                 <p className="text-stone-500 text-sm mb-6">How you nourish your internal flame.</p>
                                             </div>
                                             <div className="grid grid-cols-1 gap-3">
@@ -234,7 +234,7 @@ export default function ProfilePage() {
                                     {step === 3 && (
                                         <div className="space-y-8">
                                             <div>
-                                                <h3 className="text-xl font-serif text-stone-900 font-bold mb-2">Your True Essence</h3>
+                                                <h3 className="text-xl text-stone-900 font-bold mb-2">Your True Essence</h3>
                                                 <p className="text-stone-500 text-sm mb-6">The primary energy that flows through you.</p>
                                             </div>
                                             <div className="grid grid-cols-1 gap-3">
@@ -247,21 +247,21 @@ export default function ProfilePage() {
                                                             key={dosha.id}
                                                             onClick={() => setFormData({ ...formData, dosha: dosha.id as Dosha })}
                                                             className={`
-                                                                relative flex items-center p-6 rounded-[2rem] border transition-all duration-300 text-left
+                                                                relative flex flex-col md:flex-row md:items-center p-5 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border transition-all duration-300 text-left gap-4 md:gap-0
                                                                 ${isSelected
                                                                     ? "border-forest bg-white shadow-2xl shadow-forest/10"
                                                                     : "border-stone-100/60 bg-white/40 hover:border-forest/40 hover:bg-white"}
                                                             `}
                                                         >
-                                                            <div className={`p-4 rounded-2xl mr-6 shadow-sm transition-colors duration-300 ${isSelected ? dosha.color : 'bg-stone-100 text-stone-400'}`}>
+                                                            <div className={`p-4 rounded-xl md:rounded-2xl md:mr-6 shadow-sm transition-colors duration-300 w-fit ${isSelected ? dosha.color : 'bg-stone-100 text-stone-400'}`}>
                                                                 <Icon size={24} />
                                                             </div>
                                                             <div className="flex-1">
-                                                                <h4 className={`font-serif font-bold text-stone-900 text-lg ${isSelected ? 'text-forest' : ''}`}>{dosha.id}</h4>
+                                                                <h4 className={`font-bold text-stone-900 text-lg ${isSelected ? 'text-forest' : ''}`}>{dosha.id}</h4>
                                                                 <p className="text-xs text-stone-500 leading-relaxed mt-1 font-medium">{dosha.description}</p>
                                                             </div>
-                                                            <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-forest bg-forest' : 'border-stone-100 group-hover:border-forest/30'}`}>
-                                                                {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                                                            <div className={`absolute top-6 right-6 md:static w-6 h-6 md:w-8 md:h-8 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-forest bg-forest' : 'border-stone-100 group-hover:border-forest/30'}`}>
+                                                                {isSelected && <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white" />}
                                                             </div>
                                                         </button>
                                                     );

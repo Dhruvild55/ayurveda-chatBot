@@ -54,7 +54,7 @@ export default function LandingPage() {
                         <div className="bg-forest p-2 rounded-2xl shadow-lg shadow-forest/20">
                             <Leaf className="text-white w-6 h-6" />
                         </div>
-                        <span className="font-serif text-2xl font-bold text-gradient">AyurBot</span>
+                        <span className="text-2xl font-bold text-gradient">AyurBot</span>
                     </motion.div>
 
                     <div className="hidden md:flex items-center gap-10 text-sm font-semibold text-stone-600">
@@ -102,20 +102,20 @@ export default function LandingPage() {
                             The New Era of Wellness
                         </motion.div>
 
-                        <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl font-serif text-stone-900 leading-[0.9] mb-8 tracking-tight">
+                        <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-stone-900 leading-[1.1] md:leading-[0.9] mb-6 md:mb-8 tracking-tight">
                             Your Nature, <br />
                             <span className="text-gradient italic">Perfected</span> by AI.
                         </motion.h1>
 
-                        <motion.p variants={itemVariants} className="text-xl text-stone-500 leading-relaxed mb-10 max-w-xl font-light">
+                        <motion.p variants={itemVariants} className="text-lg md:text-xl text-stone-500 leading-relaxed mb-8 md:mb-10 max-w-xl font-light">
                             Experience a deeply personalized Ayurvedic journey. Veda uses sophisticated neural intelligence to map your biological constitution and guide you back to balance.
                         </motion.p>
 
-                        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5">
+                        <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 md:gap-5">
                             <Link href={isLoggedIn ? "/chat" : "/register"}>
-                                <Button className="h-16 px-10 text-lg rounded-3xl bg-forest hover:bg-stone-900 text-white shadow-2xl shadow-forest/30 group">
+                                <Button className="w-full sm:w-auto h-14 md:h-16 px-8 md:px-10 text-base md:text-lg rounded-2xl md:rounded-3xl bg-forest hover:bg-stone-900 text-white shadow-2xl shadow-forest/30 group flex items-center justify-center">
                                     {isLoggedIn ? "Resume Consultation" : "Start Your Free Analysis"}
-                                    <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1.5 transition-transform" />
+                                    <ArrowRight className="ml-2 w-5 h-5 md:w-6 md:h-6 group-hover:translate-x-1.5 transition-transform" />
                                 </Button>
                             </Link>
                         </motion.div>
@@ -161,7 +161,7 @@ export default function LandingPage() {
                                             <Flame className="text-orange-500 w-6 h-6" />
                                         </div>
                                         <div>
-                                            <p className="font-serif font-bold text-stone-900">Pitta Dominant</p>
+                                            <p className="font-bold text-stone-900">Pitta Dominant</p>
                                             <p className="text-[10px] tracking-wider text-stone-400 font-bold">Your Analysis</p>
                                         </div>
                                     </div>
@@ -211,9 +211,9 @@ export default function LandingPage() {
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            className="text-5xl md:text-6xl font-serif text-stone-900 mb-6"
+                            className="text-4xl md:text-6xl font-bold text-stone-900 mb-6"
                         >
-                            The Science of <br /> Holistic Connection
+                            The Science of <br className="hidden md:block" /> Holistic Connection
                         </motion.h2>
                         <p className="text-stone-400 max-w-2xl mx-auto text-lg font-light">
                             Beyond simple data, Veda understands the rhythmic cycles of nature and how they intersect with your unique genetics.
@@ -251,7 +251,7 @@ export default function LandingPage() {
                                 <div className={`${feature.color} w-16 h-16 rounded-[1.5rem] flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform`}>
                                     <feature.icon className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-2xl font-serif font-bold text-stone-900 mb-4">{feature.title}</h3>
+                                <h3 className="text-2xl font-bold text-stone-900 mb-4">{feature.title}</h3>
                                 <p className="text-stone-500 text-sm leading-relaxed font-light">{feature.desc}</p>
                             </motion.div>
                         ))}
@@ -266,11 +266,11 @@ export default function LandingPage() {
             <section id="how-it-works" className="py-32 px-4 relative">
                 <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-24 items-center">
                     <div className="relative">
-                        <div className="absolute -left-12 top-0 text-9xl font-serif font-black text-forest/5 opacity-50 pointer-events-none">
+                        <div className="absolute -left-12 top-0 text-9xl font-bold text-forest/5 opacity-50 pointer-events-none">
                             VEDA
                         </div>
-                        <h2 className="text-5xl md:text-7xl font-serif text-stone-900 leading-tight mb-12">
-                            A Masterpiece <br /> of <span className="italic text-sage">Balance.</span>
+                        <h2 className="text-4xl md:text-7xl font-bold text-stone-900 leading-tight mb-8 md:mb-12">
+                            A Masterpiece <br className="hidden md:block" /> of <span className="text-forest">Balance.</span>
                         </h2>
 
                         <div className="space-y-12">
@@ -286,7 +286,7 @@ export default function LandingPage() {
                                     transition={{ delay: idx * 0.2 }}
                                     className="flex gap-8 group"
                                 >
-                                    <span className="text-2xl font-serif font-bold text-sage group-hover:text-forest transition-colors">{item.step}</span>
+                                    <span className="text-2xl font-bold text-sage group-hover:text-forest transition-colors">{item.step}</span>
                                     <div>
                                         <h4 className="text-xl font-bold text-stone-800 mb-3">{item.title}</h4>
                                         <p className="text-stone-500 text-base leading-relaxed font-light max-w-md">{item.desc}</p>
@@ -316,7 +316,7 @@ export default function LandingPage() {
                                 <p className="text-sm font-light leading-relaxed">
                                     "Your Agni is currently low. Add cumin and coriander seeds to your warm water to stimulate digestion."
                                 </p>
-                                <div className="absolute top-4 right-4 text-celadon/20 font-serif italic">Wise Guidance</div>
+                                <div className="absolute top-4 right-4 text-celadon/20 font-bold italic">Wise Guidance</div>
                             </div>
                         </div>
                     </div>
@@ -337,9 +337,9 @@ export default function LandingPage() {
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            className="text-5xl md:text-8xl font-serif text-white mb-10 leading-[0.9]"
+                            className="text-4xl md:text-8xl font-bold text-white mb-8 md:mb-10 leading-[1.1] md:leading-[0.9]"
                         >
-                            The Journey to <br /> <span className="text-sage italic">Whole Health</span> Begins.
+                            The Journey to <br className="hidden md:block" /> <span className="text-white italic">Whole Health</span> Begins.
                         </motion.h2>
 
                         <p className="text-celadon/60 text-xl font-light mb-16 max-w-2xl mx-auto">
@@ -366,7 +366,7 @@ export default function LandingPage() {
                         <div className="bg-forest/10 p-2.5 rounded-2xl">
                             <Leaf className="text-forest w-5 h-5" />
                         </div>
-                        <span className="font-serif text-2xl font-bold text-stone-900">AyurBot</span>
+                        <span className="text-2xl font-bold text-stone-900">AyurBot</span>
                     </div>
 
                     <div className="flex gap-12 text-sm font-bold text-stone-400">
@@ -376,7 +376,7 @@ export default function LandingPage() {
                         <a href="#" className="hover:text-forest transition-colors">Social</a>
                     </div>
 
-                    <p className="text-[10px] tracking-wider font-black text-stone-300">
+                    <p className="text-[10px] tracking-wider font-bold text-stone-300">
                         Designed for the 22nd Century Seeker
                     </p>
                 </div>

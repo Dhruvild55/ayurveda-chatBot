@@ -93,7 +93,7 @@ export default function DashboardPage() {
     };
 
     return (
-        <div className="flex-1 overflow-y-auto bg-mesh p-4 md:p-10 space-y-10">
+        <div className="flex-1 overflow-y-auto bg-mesh p-4 md:p-8 lg:p-10 space-y-8 md:space-y-10">
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
@@ -103,25 +103,25 @@ export default function DashboardPage() {
                 {/* Top Bar */}
                 <motion.div variants={itemVariants} className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-2 mb-3 md:mb-4">
                             <div className="h-1.5 w-8 bg-forest rounded-full" />
-                            <span className="text-[10px] font-black tracking-wider text-stone-400">Personal Sanctum</span>
+                            <span className="text-[10px] font-bold tracking-wider text-stone-400">Personal Sanctum</span>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-serif font-bold text-stone-900 leading-none">
-                            Namaste, <span className="text-gradient italic">{(user?.name || profile?.name || session?.user?.name)?.split(' ')[0] || "Seeker"}</span>
+                        <h1 className="text-3xl md:text-5xl font-bold text-stone-900 leading-tight">
+                            Namaste, <span className="text-gradient">{(user?.name || profile?.name || session?.user?.name)?.split(' ')[0] || "Seeker"}</span>
                         </h1>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 w-full lg:w-auto">
                         <div className="hidden sm:flex flex-col items-end mr-2">
                             <span className="text-[10px] font-bold text-stone-400 tracking-wider">Health Index</span>
-                            <span className="text-sm font-black text-forest">Progressing +12%</span>
+                            <span className="text-sm font-bold text-forest">Progressing +12%</span>
                         </div>
-                        <Link href="/chat">
+                        <Link href="/chat" className="flex-1 lg:flex-none">
                             <motion.button
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="flex items-center gap-3 bg-forest hover:bg-stone-900 text-celadon px-8 py-4 rounded-2xl shadow-2xl shadow-forest/20 transition-all font-bold group overflow-hidden relative"
+                                className="w-full flex items-center justify-center gap-3 bg-forest hover:bg-stone-900 text-celadon px-6 md:px-8 py-3.5 md:py-4 rounded-2xl shadow-2xl shadow-forest/20 transition-all font-bold group overflow-hidden relative"
                             >
                                 <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none" />
                                 <Plus className="w-5 h-5 relative z-10" />
@@ -136,36 +136,36 @@ export default function DashboardPage() {
                     {/* Hero Card - Dosha */}
                     <motion.div
                         variants={itemVariants}
-                        className={`lg:col-span-8 glass-card rounded-[3rem] p-8 md:p-12 relative overflow-hidden group border-2 ${getDoshaColorClass(profile?.dosha?.name || profile?.dosha)}`}
+                        className={`lg:col-span-8 glass-card rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-12 relative overflow-hidden group border-2 ${getDoshaColorClass(profile?.dosha?.name || profile?.dosha)}`}
                     >
                         <div className="relative z-10 h-full flex flex-col">
-                            <div className="flex justify-between items-start mb-10">
+                            <div className="flex flex-col md:flex-row md:justify-between items-start gap-8 md:gap-0 mb-8 md:mb-10">
                                 <div className="space-y-4">
-                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/60 border border-white text-[10px] font-black tracking-wider shadow-sm">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/60 border border-white text-[10px] font-bold tracking-wider shadow-sm">
                                         Active Constitution
                                     </div>
-                                    <div className="flex items-center gap-5">
+                                    <div className="flex items-center gap-4 md:gap-5">
                                         <div
-                                            className="p-5 bg-white rounded-3xl shadow-xl shadow-stone-200/50"
+                                            className="p-4 md:p-5 bg-white rounded-2xl md:rounded-3xl shadow-xl shadow-stone-200/50"
                                         >
                                             {getDoshaIcon(profile?.dosha?.name || profile?.dosha)}
                                         </div>
                                         <div>
-                                            <h2 className="text-5xl md:text-6xl font-serif font-bold text-stone-900 leading-none mb-2">
+                                            <h2 className="text-4xl md:text-6xl font-bold text-stone-900 leading-tight mb-1 md:mb-2 text-forest">
                                                 {profile?.dosha?.name || profile?.dosha || "Analyzing"}
                                             </h2>
                                             <div className="flex items-center gap-2 text-stone-400">
-                                                <Activity className="w-4 h-4" />
-                                                <span className="text-xs font-bold tracking-wider">Biological Frequency</span>
+                                                <div className="w-1.5 h-1.5 rounded-full bg-forest/30" />
+                                                <span className="text-[10px] font-bold tracking-widest uppercase">Prakriti Status</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div
-                                    className="h-14 w-14 bg-white rounded-full flex items-center justify-center shadow-lg border border-white cursor-pointer hover:bg-stone-50 transition-colors"
+                                    className="h-12 w-12 md:h-14 md:w-14 bg-white rounded-full flex items-center justify-center shadow-lg border border-white cursor-pointer hover:bg-stone-50 transition-colors shrink-0"
                                 >
-                                    <ArrowUpRight className="w-6 h-6 text-stone-400" />
+                                    <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-stone-400" />
                                 </div>
                             </div>
 
@@ -189,14 +189,14 @@ export default function DashboardPage() {
                     {/* Side Card - Tip */}
                     <motion.div
                         variants={itemVariants}
-                        className="lg:col-span-4 bg-forest text-celadon rounded-[3rem] p-10 relative overflow-hidden flex flex-col"
+                        className="lg:col-span-4 bg-forest text-celadon rounded-[2.5rem] md:rounded-[3rem] p-8 md:p-10 relative overflow-hidden flex flex-col"
                     >
                         <div className="relative z-10 flex flex-col h-full">
-                            <div className="bg-white/10 backdrop-blur-md p-4 rounded-[1.5rem] w-fit mb-8 border border-white/10">
-                                <Sparkles className="w-6 h-6 text-sage" />
+                            <div className="bg-white/10 backdrop-blur-md p-3.5 md:p-4 rounded-xl md:rounded-[1.5rem] w-fit mb-6 md:mb-8 border border-white/10">
+                                <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-sage" />
                             </div>
-                            <h3 className="text-[10px] font-black tracking-wider mb-4 text-sage">Daily Transmission</h3>
-                            <p className="text-2xl font-serif leading-tight mb-8 italic">
+                            <h3 className="text-[10px] font-bold tracking-wider mb-3 md:mb-4 text-sage">Daily Transmission</h3>
+                            <p className="text-xl md:text-2xl leading-tight mb-8">
                                 "{randomTip}"
                             </p>
 
@@ -218,37 +218,37 @@ export default function DashboardPage() {
                     <div className="lg:col-span-5 space-y-8">
                         {/* Stats Widgets */}
                         <div className="grid grid-cols-2 gap-6">
-                            <motion.div variants={itemVariants} className="glass-card p-8 rounded-[2.5rem]">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="p-3 bg-celadon rounded-2xl">
-                                        <TrendingUp className="w-5 h-5 text-forest" />
+                            <motion.div variants={itemVariants} className="glass-card p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem]">
+                                <div className="flex items-center gap-3 mb-4 md:mb-6">
+                                    <div className="p-2.5 md:p-3 bg-celadon rounded-xl md:rounded-2xl">
+                                        <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-forest" />
                                     </div>
-                                    <span className="text-[10px] font-black tracking-wider text-stone-400">Vitality</span>
+                                    <span className="text-[10px] font-bold tracking-wider text-stone-400">Vitality</span>
                                 </div>
-                                <p className="text-3xl font-serif font-bold text-stone-900 mb-1">94%</p>
+                                <p className="text-2xl md:text-3xl font-bold text-stone-900 mb-1">94%</p>
                                 <p className="text-xs text-sage font-bold">+2.4% this week</p>
                             </motion.div>
 
-                            <motion.div variants={itemVariants} className="glass-card p-8 rounded-[2.5rem]">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="p-3 bg-stone-100 rounded-2xl">
-                                        <Calendar className="w-5 h-5 text-stone-400" />
+                            <motion.div variants={itemVariants} className="glass-card p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem]">
+                                <div className="flex items-center gap-3 mb-4 md:mb-6">
+                                    <div className="p-2.5 md:p-3 bg-stone-100 rounded-xl md:rounded-2xl">
+                                        <Calendar className="w-4 h-4 md:w-5 md:h-5 text-stone-400" />
                                     </div>
-                                    <span className="text-[10px] font-black tracking-wider text-stone-400">Sadhana</span>
+                                    <span className="text-[10px] font-bold tracking-wider text-stone-400">Sadhana</span>
                                 </div>
-                                <p className="text-3xl font-serif font-bold text-stone-900 mb-1">12</p>
+                                <p className="text-2xl md:text-3xl font-bold text-stone-900 mb-1">12</p>
                                 <p className="text-xs text-stone-400 font-bold italic">Consecutive days</p>
                             </motion.div>
                         </div>
 
                         {/* Profile Completion */}
-                        <motion.div variants={itemVariants} className="glass-card p-10 rounded-[2.5rem] relative overflow-hidden group">
+                        <motion.div variants={itemVariants} className="glass-card p-8 md:p-10 rounded-[2rem] md:rounded-[2.5rem] relative overflow-hidden group">
                             <div className="flex justify-between items-center mb-10">
                                 <div>
-                                    <h4 className="text-xl font-serif font-bold text-stone-900">Health Profile</h4>
-                                    <p className="text-xs text-stone-400 font-bold tracking-wider mt-1">Status: Refining</p>
+                                    <h4 className="text-xl font-bold text-stone-900">Health Profile</h4>
+                                    <p className="text-xs text-stone-400 font-bold mt-1">Completion Status</p>
                                 </div>
-                                <span className="text-3xl font-serif font-black text-forest group-hover:scale-110 transition-transform">85%</span>
+                                <span className="text-3xl font-bold text-forest group-hover:scale-110 transition-transform">85%</span>
                             </div>
 
                             <div className="h-3 w-full bg-stone-100 rounded-full overflow-hidden border border-stone-200/50 relative">
@@ -262,12 +262,12 @@ export default function DashboardPage() {
 
                             <div className="grid grid-cols-2 gap-4 mt-10">
                                 <div className="p-4 bg-white/50 rounded-2xl border border-white/80">
-                                    <p className="text-[9px] font-black tracking-wider text-stone-400 mb-1">Diet</p>
-                                    <p className="text-sm font-serif font-bold text-stone-800">{profile?.diet || "Setup Required"}</p>
+                                    <p className="text-[9px] font-bold tracking-wider text-stone-400 mb-1">Diet</p>
+                                    <p className="text-sm font-bold text-stone-800">{profile?.diet || "Setup Required"}</p>
                                 </div>
                                 <div className="p-4 bg-white/50 rounded-2xl border border-white/80">
-                                    <p className="text-[9px] font-black tracking-wider text-stone-400 mb-1">Age</p>
-                                    <p className="text-sm font-serif font-bold text-stone-800">{profile?.age ? `${profile.age} Yrs` : "Setup Required"}</p>
+                                    <p className="text-[9px] font-bold tracking-wider text-stone-400 mb-1">Age</p>
+                                    <p className="text-sm font-bold text-stone-800">{profile?.age ? `${profile.age} Yrs` : "Setup Required"}</p>
                                 </div>
                             </div>
 
@@ -281,47 +281,47 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Activity Feed */}
-                    <motion.div variants={itemVariants} className="lg:col-span-7 glass-card rounded-[3.5rem] p-10 flex flex-col">
-                        <div className="flex items-center justify-between mb-10">
+                    <motion.div variants={itemVariants} className="lg:col-span-7 glass-card rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-10 flex flex-col">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-0 mb-8 md:mb-10">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-stone-900 rounded-2xl shadow-xl shadow-stone-900/10">
-                                    <Clock className="w-6 h-6 text-white" />
+                                <div className="p-2.5 md:p-3 bg-stone-900 rounded-xl md:rounded-2xl shadow-xl shadow-stone-900/10">
+                                    <Clock className="w-5 h-5 md:w-6 md:h-6 text-white" />
                                 </div>
                                 <div>
-                                    <h3 className="text-2xl font-serif font-bold text-stone-900">Recent Transmissions</h3>
+                                    <h3 className="text-xl md:text-2xl font-bold text-stone-900">Recent Transmissions</h3>
                                     <p className="text-xs text-stone-400 font-bold tracking-wider">Your last 3 healing sessions</p>
                                 </div>
                             </div>
-                            <Link href="/chat" className="text-xs font-black tracking-wider text-forest hover:underline">Full History</Link>
+                            <Link href="/chat" className="text-xs font-bold tracking-wider text-forest hover:underline">Full History</Link>
                         </div>
 
                         <div className="space-y-4 flex-1">
                             {sessionsLoading ? (
-                                [1, 2, 3].map(i => <div key={i} className="h-24 bg-stone-50 rounded-[2rem] animate-pulse" />)
+                                [1, 2, 3].map(i => <div key={i} className="h-20 md:h-24 bg-stone-50 rounded-2xl md:rounded-[2rem] animate-pulse" />)
                             ) : sessions.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-20 bg-stone-50/50 rounded-[2rem] border border-dashed border-stone-200">
+                                <div className="flex flex-col items-center justify-center py-16 md:py-20 bg-stone-50/50 rounded-2xl md:rounded-[2rem] border border-dashed border-stone-200">
                                     <Smartphone className="w-12 h-12 text-stone-200 mb-4" />
-                                    <p className="text-stone-400 text-sm font-medium italic">No transmissions recorded yet.</p>
+                                    <p className="text-stone-400 text-sm font-bold italic">No transmissions recorded yet.</p>
                                 </div>
                             ) : (
                                 sessions.slice(0, 3).map((session, idx) => (
                                     <Link key={session.id} href={`/chat/${session.id}`}>
                                         <div
-                                            className="flex items-center gap-6 p-5 bg-white/40 rounded-[2rem] transition-all border border-transparent hover:border-forest/10 group cursor-pointer shadow-sm hover:bg-white/80"
+                                            className="flex items-center gap-4 md:gap-6 p-4 md:p-5 bg-white/40 rounded-2xl md:rounded-[2rem] transition-all border border-transparent hover:border-forest/10 group cursor-pointer shadow-sm hover:bg-white/80"
                                         >
-                                            <div className="w-16 h-16 bg-white rounded-2xl shadow-lg shadow-stone-100 flex items-center justify-center text-stone-300 group-hover:text-forest group-hover:scale-105 transition-all">
-                                                <MessageCircle className="w-8 h-8" />
+                                            <div className="w-12 h-12 md:w-16 md:h-16 bg-white rounded-xl md:rounded-2xl shadow-lg shadow-stone-100 flex items-center justify-center text-stone-300 group-hover:text-forest group-hover:scale-105 transition-all shrink-0">
+                                                <MessageCircle className="w-6 h-6 md:w-8 md:h-8" />
                                             </div>
                                             <div className="flex-1 overflow-hidden">
-                                                <p className="text-lg font-serif font-bold text-stone-800 truncate mb-1">{session.sessionName || "Wisdom Portal"}</p>
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-[10px] font-black tracking-wider text-stone-400">{session.createdAt ? new Date(session.createdAt).toLocaleDateString() : "Present"}</span>
+                                                <p className="text-base md:text-lg font-bold text-stone-800 truncate mb-0.5 md:mb-1">{session.sessionName || "Wisdom Portal"}</p>
+                                                <div className="flex items-center gap-2 md:gap-3">
+                                                    <span className="text-[10px] font-bold tracking-wider text-stone-400">{session.createdAt ? new Date(session.createdAt).toLocaleDateString() : "Present"}</span>
                                                     <span className="w-1 h-1 bg-stone-200 rounded-full" />
-                                                    <span className="text-[10px] font-bold text-sage">Encrypted Connection</span>
+                                                    <span className="text-[10px] font-bold text-sage">Encrypted</span>
                                                 </div>
                                             </div>
-                                            <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-all">
-                                                <ChevronRight className="w-5 h-5 text-forest" />
+                                            <div className="h-8 w-8 md:h-10 md:w-10 bg-white rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-all shrink-0">
+                                                <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-forest" />
                                             </div>
                                         </div>
                                     </Link>

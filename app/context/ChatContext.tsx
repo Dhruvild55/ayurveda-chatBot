@@ -21,6 +21,8 @@ interface ChatContextType {
     sessions: ChatSession[];
     user: User | null;
     loading: boolean;
+    isMobileMenuOpen: boolean;
+    setMobileMenuOpen: (open: boolean) => void;
     refreshSessions: () => Promise<void>;
     deleteSession: (id: string) => Promise<void>;
 }
@@ -33,6 +35,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const [sessions, setSessions] = useState<ChatSession[]>([]);
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const refreshSessions = useCallback(async () => {
         const token = localStorage.getItem("token");
@@ -117,7 +120,15 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }, [session, refreshSessions, pathname]);
 
     return (
-        <ChatContext.Provider value={{ sessions, user, loading, refreshSessions, deleteSession }}>
+        <ChatContext.Provider value={{
+            sessions,
+            user,
+            loading,
+            isMobileMenuOpen,
+            setMobileMenuOpen,
+            refreshSessions,
+            deleteSession
+        }}>
             {children}
         </ChatContext.Provider>
     );

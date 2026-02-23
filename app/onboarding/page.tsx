@@ -107,7 +107,7 @@ export default function OnboardingPage() {
                 {/* Step 1: Basic Details */}
                 {step === 1 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h1 className="text-2xl font-serif text-stone-800 mb-2 text-center">{BASIC_DETAILS.title}</h1>
+                        <h1 className="text-2xl font-bold text-stone-800 mb-2 text-center">{BASIC_DETAILS.title}</h1>
                         <p className="text-stone-500 text-center mb-6">{BASIC_DETAILS.subtitle}</p>
 
                         <div className="space-y-4">
@@ -153,7 +153,7 @@ export default function OnboardingPage() {
                 {/* Step 2: Health Profile */}
                 {step === 2 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h1 className="text-2xl font-serif text-stone-800 mb-2 text-center">{HEALTH_PROFILE.title}</h1>
+                        <h1 className="text-2xl font-bold text-stone-800 mb-2 text-center">{HEALTH_PROFILE.title}</h1>
                         <p className="text-stone-500 text-center mb-6">{HEALTH_PROFILE.subtitle}</p>
 
                         <div>
@@ -176,7 +176,7 @@ export default function OnboardingPage() {
                 {/* Step 3: Dosha Selection */}
                 {step === 3 && (
                     <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                        <h1 className="text-2xl font-serif text-stone-800 mb-2 text-center">Dosha Profile</h1>
+                        <h1 className="text-2xl font-bold text-stone-800 mb-2 text-center">Dosha Profile</h1>
                         <p className="text-stone-500 text-center mb-6">Select your dominant energy type.</p>
 
                         <div className="grid grid-cols-1 gap-3">
@@ -199,7 +199,7 @@ export default function OnboardingPage() {
                                             <Icon size={20} />
                                         </div>
                                         <div>
-                                            <h3 className="font-serif font-medium text-stone-800">{dosha.id}</h3>
+                                            <h3 className="font-bold text-stone-800">{dosha.id}</h3>
                                             <p className="text-xs text-stone-500 leading-tight mt-0.5">{dosha.description}</p>
                                         </div>
                                         {isSelected && (

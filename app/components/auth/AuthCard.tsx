@@ -34,13 +34,13 @@ export default function AuthCard({
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="glass-card p-10 md:p-12 rounded-[3.5rem] w-full max-w-lg relative z-10"
+                className="glass-card p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] w-full max-w-lg relative z-10"
             >
                 <div className="flex flex-col items-center mb-10">
                     <div className="bg-forest p-3 rounded-2xl shadow-xl shadow-forest/20 mb-6 transition-transform hover:rotate-12">
                         <Leaf className="text-white w-8 h-8" />
                     </div>
-                    <h1 className="font-serif text-4xl font-bold text-stone-900 tracking-tight text-center">
+                    <h1 className="text-4xl font-bold text-stone-900 tracking-tight text-center">
                         {title}
                     </h1>
                 </div>
